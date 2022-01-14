@@ -1,0 +1,26 @@
+#1. 不同database
+#2. 策略寫在設定黨上
+spring:
+  shardingsphere:
+    datasource:
+      names: db0,db1
+      db0:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://127.0.0.1:3306/sharding0
+        username: root
+        type: com.zaxxer.hikari.HikariDataSource
+      db1:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://127.0.0.1:3306/sharding1
+        username: root
+        type: com.zaxxer.hikari.HikariDataSource
+    rules:
+      sharding:
+        default-database-strategy:
+          standard:
+            sharding-column: user_id
+      sharding-algorithms:
+        database-inline:
+          type: INLINE
+          props:
+            algorithm-expression: ds$->{user_id % 2}
